@@ -1,2 +1,2 @@
 # c_sudoku
-This project is my early attempt to practice c.
+This project is one of my early attempt to practice c.
