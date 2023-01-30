@@ -7,13 +7,13 @@
 #define MAX 100
 #define BOARD_NAME_MAX_SIZE 100
 
-struct sudoko_board {
+struct sudoku_board {
 	int data_values[BOARD_SIZE+1];
 	char board_name[BOARD_NAME_MAX_SIZE];
 
 };
 
-typedef struct sudoko_board Board;
+typedef struct sudoku_board Board;
 
 int Display_board(Board **gameboard)
 {
