@@ -106,6 +106,22 @@ Board *board_init(char *board_name, char * file_name)
     Each of the 9 sub-squares, of size 3x3, ​contains a unique value from 1-9.
 */
 
+bool check_for_duplicates(int unique_values[])
+{
+	//print out array of values
+	for(int i=0; i<10; i++)
+	{
+		//!! Temp remove out 0 values from test!!
+		if(i != 0 && unique_values[i] > 1)
+		{
+			printf("ERROR found two or more values of %d\n", i);
+			return 1;
+		}
+		//printf("Number of unique_values for %d: %d\n", i, unique_values[i]);
+	}
+	return 0;
+}
+
 bool checkboard_for_rules(Board **gameboard)
 {
 
@@ -115,49 +131,106 @@ bool checkboard_for_rules(Board **gameboard)
 	if(BOARD_SIZE == 81)
 	{
 
-		//checking 6*(3x3) sub squares
+		/*checking for:
+			Each of the 9 sub-squares, of size 3x3, ​contains a unique value from 1-9.*/
 
 		//creating array to check for number of values of x type 1-9 starting at [0]
 		//incr value at x place each time
-		int unique_values [10] = {0};
+			int unique_values [10] = {0};
 
-		int base_incr = 0;
-		int base_start_incr = 0;
+			int base_incr = 0;
+			int base_start_incr = 0;
+			int temp_array_value = 0;
 
-		int base_start_incr_array[9] = {1, 4, 7, 28, 31, 34, 55, 58, 61};
+			int base_start_incr_array[9] = {1, 4, 7, 28, 31, 34, 55, 58, 61};
 
-		for (int k = 0; k < 9; k++)
-		{
-			base_start_incr = base_start_incr_array[k];
-			printf("Base %d\n\n", base_start_incr);
-
-			for(int i=base_start_incr; i<base_start_incr+9; i++)
+			for (int k = 0; k < 9; k++)
 			{
+				base_start_incr = base_start_incr_array[k];
+				//printf("Base %d\n\n", base_start_incr);
 
-				printf("Value i:%d at %d: %d\n", i, (i-1)+base_incr,(*gameboard)->data_values[(i-1)+base_incr]);
-				
-				int temp_array_value = (*gameboard)->data_values[(i-1)+base_incr];
-
-				unique_values[temp_array_value]++;
-
-				if(i % 3 == 0)
-					base_incr += 6;
-			}
-
-			//print out array of values
-			for(int i=0; i<10; i++)
-			{
-				//!! Temp remove out 0 values from test!!
-				if(i != 0 && unique_values[i] > 1)
+				for(int i=base_start_incr; i<base_start_incr+9; i++)
 				{
-					printf("ERROR found two or more values of %d\n", i);
-					return 1;
+
+					printf("Value i:%d at %d: %d\n", i, (i-1)+base_incr,(*gameboard)->data_values[(i-1)+base_incr]);
+					
+					temp_array_value = (*gameboard)->data_values[(i-1)+base_incr];
+
+					unique_values[temp_array_value]++;
+
+					if(i % 3 == 0)
+						base_incr += 6;
 				}
-				//printf("Number of unique_values for %d: %d\n", i, unique_values[i]);
+				printf("\n");
+
+				if(check_for_duplicates(unique_values))
+					return 1;
+
+				memset(unique_values, 0, sizeof(unique_values));
+				base_incr = 0;
 			}
+		/*Checking for:
+		    Each row contains unique values from 1-9.
+    		Each column contains unique values from 1-9.*/
+
+	    	//reset unique_value for temp array for rows
 			memset(unique_values, 0, sizeof(unique_values));
-			base_incr = 0;
-		}
+			temp_array_value = 0;
+		    	//Checking rows
+
+		    int j;
+			for (j=0;j <= (BOARD_SIZE-1);j+=9) 
+			{
+				for(int k=0; k<9;k++)
+				{
+					printf("%d", (*gameboard)->data_values[(j)+k]);
+
+					temp_array_value = (*gameboard)->data_values[(j)+k];
+					if(!temp_array_value)
+						unique_values[temp_array_value]++;
+				}
+				printf("\n");
+				if(check_for_duplicates(unique_values))
+					return 1;
+
+				//reset the unique_value array
+				memset(unique_values, 0, sizeof(unique_values));
+			}
+
+			//Checking columns
+			
+			memset(unique_values, 0, sizeof(unique_values));
+			temp_array_value = 0;
+
+		    printf("Printing columns \n\n");
+
+		    for (int i = 0; i < 10; ++i)
+		    {
+		    	
+		    	printf("%d\n", unique_values[i]);
+		    }
+
+		    for(int g=0; g<9;g++)
+			{
+				for(int k=0;k<9;k++) 
+				{
+					printf("%d:", (*gameboard)->data_values[(g+k*9)]);
+
+					temp_array_value = (*gameboard)->data_values[(j)+k*9];
+					if(!temp_array_value)
+						unique_values[temp_array_value]++;
+				}
+				printf("\n");
+				if(check_for_duplicates(unique_values))
+					return 1;
+
+				//reset the unique_value array
+				memset(unique_values, 0, sizeof(unique_values));
+			}
+
+
+
+
 	}
 
 
