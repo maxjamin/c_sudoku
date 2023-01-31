@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <stdbool.h>
 
 #define BOARD_SIZE 81
 #define MAX 100
@@ -99,6 +100,69 @@ Board *board_init(char *board_name, char * file_name)
 
 }
 
+/*
+    Each row contains unique values from 1-9.
+    Each column contains unique values from 1-9.
+    Each of the 9 sub-squares, of size 3x3, ​contains a unique value from 1-9.
+*/
+
+bool checkboard_for_rules(Board **gameboard)
+{
+
+	printf("\n");
+
+	//Assuming board is size 9x9
+	if(BOARD_SIZE == 81)
+	{
+
+		//checking 6*(3x3) sub squares
+
+		//creating array to check for number of values of x type 1-9 starting at [0]
+		//incr value at x place each time
+		int unique_values [10] = {0};
+
+		int base_incr = 0;
+		int base_start_incr = 0;
+
+		int base_start_incr_array[9] = {1, 4, 7, 28, 31, 34, 55, 58, 61};
+
+		for (int k = 0; k < 9; k++)
+		{
+			base_start_incr = base_start_incr_array[k];
+			printf("Base %d\n\n", base_start_incr);
+
+			for(int i=base_start_incr; i<base_start_incr+9; i++)
+			{
+
+				printf("Value i:%d at %d: %d\n", i, (i-1)+base_incr,(*gameboard)->data_values[(i-1)+base_incr]);
+				
+				int temp_array_value = (*gameboard)->data_values[(i-1)+base_incr];
+
+				unique_values[temp_array_value]++;
+
+				if(i % 3 == 0)
+					base_incr += 6;
+			}
+
+			//print out array of values
+			for(int i=0; i<10; i++)
+			{
+				//!! Temp remove out 0 values from test!!
+				if(i != 0 && unique_values[i] > 1)
+				{
+					printf("ERROR found two or more values of %d\n", i);
+					return 1;
+				}
+				//printf("Number of unique_values for %d: %d\n", i, unique_values[i]);
+			}
+			memset(unique_values, 0, sizeof(unique_values));
+			base_incr = 0;
+		}
+	}
+
+
+}
+
 int main()
 {
 
@@ -106,4 +170,5 @@ int main()
 
 	Display_board(&game_board);
 
+	checkboard_for_rules(&game_board);
 }
